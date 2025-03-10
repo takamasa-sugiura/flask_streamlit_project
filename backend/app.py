@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -18,6 +18,11 @@ def get_users():
         {"id": 3, "name": "Charlie"}
     ]
     return jsonify(users)
+
+@app.route("/echo", methods=["POST"])
+def echo():
+    data = request.json
+    return jsonify({"received": data})
 
 if __name__ == "__main__":
     import os
