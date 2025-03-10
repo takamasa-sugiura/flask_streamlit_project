@@ -1,13 +1,16 @@
-import gspread
+import json
 import os
+import gspread
 from google.oauth2.service_account import Credentials
 
 # Google API 認証情報
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
-# 認証情報を環境変数から取得
-creds = Credentials.from_service_account_file("backend/spreadsheet-to-pdf-f0b419fd4345", scopes=scope)
+# Render の環境変数から `credentials.json` を取得
+credentials_json = json.loads(os.getenv("GOOGLE_CREDENTIALS"))
+creds = Credentials.from_service_account_info(credentials_json, scopes=scope)
 client = gspread.authorize(creds)
+
 
 def edit_cell(spreadsheet_id, sheet_name, cell, value):
     try:
