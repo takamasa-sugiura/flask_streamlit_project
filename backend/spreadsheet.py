@@ -1,18 +1,25 @@
-import os
 import json
+import os
 import gspread
 from google.oauth2.service_account import Credentials
 
-# ✅ Google API 認証情報
+# Google API 認証情報
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
-# ✅ 認証情報を `credentials.json` から取得
-credentials_path = "backend/flask-sheets-project-1580c622794f"
-if not os.path.exists(credentials_path):
-    raise FileNotFoundError(f"❌ 認証ファイルが見つかりません: {credentials_path}")
+# Render の環境変数から `credentials.json` を取得
+credentials_str = os.getenv("GOOGLE_CREDENTIALS")
 
-creds = Credentials.from_service_account_file(credentials_path, scopes=scope)
+# ✅ デバッグ用にログを出力（Render の Logs に表示される）
+if credentials_str is None:
+    print("❌ `GOOGLE_CREDENTIALS` の環境変数が設定されていません！")
+else:
+    print("✅ `GOOGLE_CREDENTIALS` を取得しました！")
+
+# JSON をロード
+credentials_json = json.loads(credentials_str)
+creds = Credentials.from_service_account_info(credentials_json, scopes=scope)
 client = gspread.authorize(creds)
+
 
 SPREADSHEET_ID = "1XOihFCwFJVyDZc2xW7N-hvXBKbi6xLwiG4T5zaKuT2E"  # ✅ あなたのスプレッドシート ID に変更
 
