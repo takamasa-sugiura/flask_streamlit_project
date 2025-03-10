@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from backend import spreadsheet  # スプレッドシート操作用モジュール
 
 app = Flask(__name__)
 
@@ -6,23 +7,19 @@ app = Flask(__name__)
 def home():
     return jsonify({"message": "Hello, Flask!"})
 
-@app.route("/ping")
-def ping():
-    return jsonify({"message": "pong!"})
+@app.route("/copy_sheet", methods=["POST"])
+def copy_sheet():
+    try:
+        data = request.json
+        if "month" not in data:
+            return jsonify({"error": "month パラメータが必要です"}), 400
+        
+        result = spreadsheet.copy_sheet(data["month"])
+        return jsonify(result)
 
-@app.route("/users", methods=["GET"])
-def get_users():
-    users = [
-        {"id": 1, "name": "Alice"},
-        {"id": 2, "name": "Bob"},
-        {"id": 3, "name": "Charlie"}
-    ]
-    return jsonify(users)
-
-@app.route("/echo", methods=["POST"])
-def echo():
-    data = request.json
-    return jsonify({"received": data})
+    except Exception as e:
+        print(f"❌ `/copy_sheet` エラー: {str(e)}")
+        return jsonify({"error": "シートコピーに失敗しました", "details": str(e)}), 500
 
 if __name__ == "__main__":
     import os
