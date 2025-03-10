@@ -1,15 +1,15 @@
 from flask import Flask, jsonify, request
 from backend import spreadsheet  # `spreadsheet.py` をインポート
 
-# Flask アプリの作成
+# ✅ Flask アプリの作成
 app = Flask(__name__)
 
-# ✅ ルート `/` → アプリが動いているか確認するためのエンドポイント
+# ✅ ルート `/` → アプリの動作確認用
 @app.route("/")
 def home():
     return jsonify({"message": "Hello, Flask!"})
 
-# ✅ `/edit_cell` → Google スプレッドシートの特定のセルを編集するエンドポイント
+# ✅ `/edit_cell` → Google スプレッドシートのセルを編集
 @app.route("/edit_cell", methods=["POST"])
 def edit_cell():
     try:
