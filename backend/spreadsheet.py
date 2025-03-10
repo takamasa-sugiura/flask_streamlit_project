@@ -23,12 +23,13 @@ client = gspread.authorize(creds)
 
 SPREADSHEET_ID = "1XOihFCwFJVyDZc2xW7N-hvXBKbi6xLwiG4T5zaKuT2E"  # ✅ あなたのスプレッドシート ID に変更
 
-def edit_cell(sheet_name, cell, value):
+def edit_cell(spreadsheet_id, sheet_name, cell, value):
     """ 指定したスプレッドシートのセルを編集する """
     try:
-        print(f"📌 `/edit_cell` が呼ばれました！（{sheet_name}: {cell} → {value}）")
+        print(f"📌 `/edit_cell` が呼ばれました！（{spreadsheet_id} - {sheet_name}: {cell} → {value}）")
         
-        spreadsheet = client.open_by_key(SPREADSHEET_ID)
+        # ✅ `spreadsheet_id` を使ってスプレッドシートを開く
+        spreadsheet = client.open_by_key(spreadsheet_id)
         worksheet = spreadsheet.worksheet(sheet_name)
 
         worksheet.update_acell(cell, value)
