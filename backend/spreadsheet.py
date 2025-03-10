@@ -6,7 +6,8 @@ from google.oauth2.service_account import Credentials
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
 # `backend/credentials.json` を使用
-creds = Credentials.from_service_account_file("backend/spreadsheet-to-pdf-f0b419fd4345.json", scopes=scope)
+credentials_json = json.loads(os.getenv("GOOGLE_CREDENTIALS"))
+creds = Credentials.from_service_account_info(credentials_json, scopes=scope)
 client = gspread.authorize(creds)
 
 def copy_sheet(month):
