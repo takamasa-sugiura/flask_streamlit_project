@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from backend import spreadsheet  # スプレッドシート操作用モジュール
+from backend import spreadsheet  # `spreadsheet.py` をインポート
 
 app = Flask(__name__)
 
