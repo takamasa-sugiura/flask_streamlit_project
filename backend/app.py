@@ -10,6 +10,15 @@ def home():
 def ping():
     return jsonify({"message": "pong!"})
 
+@app.route("/users", methods=["GET"])
+def get_users():
+    users = [
+        {"id": 1, "name": "Alice"},
+        {"id": 2, "name": "Bob"},
+        {"id": 3, "name": "Charlie"}
+    ]
+    return jsonify(users)
+
 if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 10000))
