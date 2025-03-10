@@ -9,32 +9,16 @@ app = Flask(__name__)
 def home():
     return jsonify({"message": "Hello, Flask!"})
 
-# ✅ `/edit_cell` → Google スプレッドシートのセルを編集
-@app.route("/edit_cell", methods=["POST"])
-def edit_cell():
+@app.route("/copy_sheet", methods=["POST"])
+def copy_sheet():
     try:
-        # クライアントからのリクエスト JSON を取得
-        data = request.json
-
-        # 必要なパラメータがすべて含まれているか確認
-        required_keys = ["spreadsheet_id", "sheet_name", "cell", "value"]
-        if not all(key in data for key in required_keys):
-            return jsonify({"error": "必要なパラメータが不足しています"}), 400
-
-        # スプレッドシートを編集する処理を呼び出し
-        result = spreadsheet.edit_cell(
-            data["spreadsheet_id"], 
-            data["sheet_name"], 
-            data["cell"], 
-            data["value"]
-        )
-
+        data = request.get_json(force=True)
+        # 必要なパラメータは省略しているので、固定で実行する例
+        result = spreadsheet.copy_and_update()
         return jsonify(result)
-
     except Exception as e:
-        print(f"❌ `/edit_cell` エラー: {str(e)}")
-        return jsonify({"error": "セル編集に失敗しました", "details": str(e)}), 500
-
+        print(f"❌ `/copy_sheet` エラー: {str(e)}")
+        return jsonify({"error": "シートコピーに失敗しました", "details": str(e)}), 500
 # ✅ Flask アプリを起動
 if __name__ == "__main__":
     import os
