@@ -1,22 +1,11 @@
-import json
-import os
-import gspread
-from google.oauth2.service_account import Credentials
+SPREADSHEET_ID = "1XOihFCwFJVyDZc2xW7N-hvXBKbi6xLwiG4T5zaKuT2E"  # ✅ あなたのスプレッドシート ID に変更
 
-# Google API 認証情報
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-
-# Render の環境変数から `credentials.json` を取得
-credentials_json = json.loads(os.getenv("GOOGLE_CREDENTIALS"))
-creds = Credentials.from_service_account_info(credentials_json, scopes=scope)
-client = gspread.authorize(creds)
-
-
-def edit_cell(spreadsheet_id, sheet_name, cell, value):
+def edit_cell(sheet_name, cell, value):
+    """ 指定したスプレッドシートのセルを編集する """
     try:
         print(f"📌 `/edit_cell` が呼ばれました！（{sheet_name}: {cell} → {value}）")
         
-        spreadsheet = client.open_by_key(spreadsheet_id)
+        spreadsheet = client.open_by_key(SPREADSHEET_ID)
         worksheet = spreadsheet.worksheet(sheet_name)
 
         worksheet.update_acell(cell, value)
