@@ -37,5 +37,8 @@ def edit_cell(spreadsheet_id, sheet_name, cell, value):
         return {"message": f"✅ セル {cell} を `{value}` に更新しました！"}
 
     except Exception as e:
-        print(f"❌ `edit_cell` エラー: {str(e)}")
-        return {"error": "セル編集に失敗しました", "details": str(e)}
+        import traceback
+        error_details = traceback.format_exc()  # ✅ 例外の詳細を取得
+        print(f"❌ `edit_cell` エラー: {error_details}")  # ✅ `Render` の Logs に詳細を表示
+
+        return {"error": "セル編集に失敗しました", "details": error_details}
