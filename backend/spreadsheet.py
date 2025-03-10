@@ -13,7 +13,7 @@ def copy_sheet(month):
     try:
         print(f"📌 `/copy_sheet` が呼ばれました！（month={month}）")
 
-        spreadsheet_id = "1ylFMe7tQQZzZRfok7Uv1Kp68sXfxeZk0sObDNm53EPs"  # ✅ スプレッドシートID
+        spreadsheet_id = "1ylFMe7tQQZzZRfok7Uv1Kp68sXfxeZk0sObDNm53EPs"  # ✅ ここにスプレッドシートIDを入力
         spreadsheet = client.open_by_key(spreadsheet_id)
         original_sheet = spreadsheet.worksheet("杉浦さん2025/〇月度請求書(原本)")  # ✅ コピー元のシート名
 
