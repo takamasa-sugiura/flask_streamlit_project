@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from backend import spreadsheet  # `spreadsheet.py` をインポート
+from backend import pdf_generator
 
 # ✅ Flask アプリの作成
 app = Flask(__name__)
