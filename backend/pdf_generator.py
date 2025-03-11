@@ -26,8 +26,8 @@ if not creds or not creds.valid:
         creds.refresh(Request())
     else:
     # 環境変数から直接認証情報を使用してフローを生成
-    flow = InstalledAppFlow.from_client_config(credentials_json, SCOPES)
-    creds = flow.run_local_server(port=0)
+        flow = InstalledAppFlow.from_client_config(credentials_json, SCOPES)
+        creds = flow.run_local_server(port=0)
 
     with open(TOKEN_PATH, "w") as token_file:
         token_file.write(creds.to_json())
