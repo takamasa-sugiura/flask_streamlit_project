@@ -25,9 +25,10 @@ if not creds or not creds.valid:
     if creds and creds.expired and creds.refresh_token:
         creds.refresh(Request())
     else:
-        flow = InstalledAppFlow.from_client_secrets_file("backend/dummy.json", SCOPES)
-        # ※ この部分は実際には使われない前提です。実際は環境変数を利用するので、ここは通常実行されないようにします。
-        creds = flow.run_local_server(port=0)
+    # 環境変数から直接認証情報を使用してフローを生成
+    flow = InstalledAppFlow.from_client_config(credentials_json, SCOPES)
+    creds = flow.run_local_server(port=0)
+
     with open(TOKEN_PATH, "w") as token_file:
         token_file.write(creds.to_json())
 
