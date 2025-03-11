@@ -19,6 +19,20 @@ def copy_sheet():
     except Exception as e:
         print(f"❌ `/copy_sheet` エラー: {str(e)}")
         return jsonify({"error": "シートコピーに失敗しました", "details": str(e)}), 500
+
+@app.route("/generate_pdf", methods=["POST"])
+def generate_pdf_endpoint():
+    try:
+        data = request.get_json(force=True)
+        if "sheet_gid" not in data:
+            return jsonify({"error": "sheet_gid パラメータが必要です"}), 400
+        
+        result = pdf_generator.generate_pdf(data["sheet_gid"])
+        return jsonify(result)
+    except Exception as e:
+        print(f"❌ `/generate_pdf` エラー: {str(e)}")
+        return jsonify({"error": "PDF生成に失敗しました", "details": str(e)}), 500
+    
 # ✅ Flask アプリを起動
 if __name__ == "__main__":
     import os
