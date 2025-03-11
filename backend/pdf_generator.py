@@ -11,11 +11,13 @@ SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 TOKEN_PATH = "backend/token.json"  # トークンは自動生成される
 # CREDENTIALS_PATH は使わないので、代わりに環境変数を使用
 
-# Render の環境変数から認証情報を取得
+# Render の環境変数から認証情報を取得し、Webアプリ用の認証情報を選択
 credentials_str = os.getenv("GOOGLE_CREDENTIALS")
 if credentials_str is None:
     raise Exception("GOOGLE_CREDENTIALS 環境変数が設定されていません。")
-credentials_json = json.loads(credentials_str)
+all_credentials_json = json.loads(credentials_str)
+credentials_json = all_credentials_json["web_client"]  # Webアプリ用の認証情報を選択
+
 
 # 認証情報の取得処理（トークンの生成）
 creds = None

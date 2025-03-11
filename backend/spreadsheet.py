@@ -6,21 +6,17 @@ from google.oauth2.service_account import Credentials
 # Google API 認証情報
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
-# Render の環境変数から `credentials.json` を取得
+# Render の環境変数から統合された認証情報を取得し、サービスアカウントの認証情報を選択
 credentials_str = os.getenv("GOOGLE_CREDENTIALS")
-
-# ✅ デバッグ用にログを出力（Render の Logs に表示される）
 if credentials_str is None:
     print("❌ `GOOGLE_CREDENTIALS` の環境変数が設定されていません！")
 else:
     print("✅ `GOOGLE_CREDENTIALS` を取得しました！")
+all_credentials_json = json.loads(credentials_str)
+credentials_json = all_credentials_json["service_account"]  # サービスアカウントの認証情報を選択
 
-# JSON をロード
-credentials_json = json.loads(credentials_str)
 creds = Credentials.from_service_account_info(credentials_json, scopes=scope)
 client = gspread.authorize(creds)
-
-
 
 
 #ここより上は各種インポートとJSONのロードのため共通これより下を編集して機能を編集する
