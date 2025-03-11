@@ -10,7 +10,7 @@ SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 # トークンとクライアントシークレットのパス（backend フォルダ内に保存する）
 # 認証情報のファイル
 TOKEN_PATH = "backend/token.json"  # これはそのままでOK
-CREDENTIALS_PATH = "backend/client_secret_330695572002-ao7iapnrsciesrj8u4dm85abduhuggic.apps.googleusercontent.com.json"
+CREDENTIALS_PATH = "backend/flask-sheets-project-1580c622794f.json"
 
 def generate_pdf(sheet_gid):
     """
