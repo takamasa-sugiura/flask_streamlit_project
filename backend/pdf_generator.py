@@ -1,49 +1,42 @@
+import os
+import json
+import requests
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
-import os
-import requests
 
-# 認証スコープを設定（ここでは Google Drive の読み取り権限）
+# スコープ設定
 SCOPES = ["https://www.googleapis.com/auth/drive.readonly"]
 
-# トークンとクライアントシークレットのパス（backend フォルダ内に保存する）
-# 認証情報のファイル
-TOKEN_PATH = "backend/token.json"  # これはそのままでOK
-CREDENTIALS_PATH = "backend/flask-sheets-project-1580c622794f.json"
+TOKEN_PATH = "backend/token.json"  # トークンは自動生成される
+# CREDENTIALS_PATH は使わないので、代わりに環境変数を使用
 
+# Render の環境変数から認証情報を取得
+credentials_str = os.getenv("GOOGLE_CREDENTIALS")
+if credentials_str is None:
+    raise Exception("GOOGLE_CREDENTIALS 環境変数が設定されていません。")
+credentials_json = json.loads(credentials_str)
+
+# 認証情報の取得処理（トークンの生成）
+creds = None
+if os.path.exists(TOKEN_PATH):
+    creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+if not creds or not creds.valid:
+    if creds and creds.expired and creds.refresh_token:
+        creds.refresh(Request())
+    else:
+        flow = InstalledAppFlow.from_client_secrets_file("backend/dummy.json", SCOPES)
+        # ※ この部分は実際には使われない前提です。実際は環境変数を利用するので、ここは通常実行されないようにします。
+        creds = flow.run_local_server(port=0)
+    with open(TOKEN_PATH, "w") as token_file:
+        token_file.write(creds.to_json())
+
+headers = {"Authorization": f"Bearer {creds.token}"}
+spreadsheet_id = "1ylFMe7tQQZzZRfok7Uv1Kp68sXfxeZk0sObDNm53EPs"
+# sheet_gid を後から引数で渡す前提
 def generate_pdf(sheet_gid):
-    """
-    指定したシートの GID を使って、請求書スプレッドシートから PDF をダウンロードする関数
-    
-    ※ 請求書スプレッドシートのIDは固定でコード内にハードコードしています。
-    """
-    creds = None
-    # 既存のトークンがあれば読み込む
-    if os.path.exists(TOKEN_PATH):
-        creds = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
-    
-    # 認証情報がない、もしくは無効な場合、新しく認証する
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_PATH, SCOPES)
-            creds = flow.run_local_server(port=0)
-        with open(TOKEN_PATH, "w") as token_file:
-            token_file.write(creds.to_json())
-    
-    # 認証トークンをヘッダーに追加
-    headers = {"Authorization": f"Bearer {creds.token}"}
-    
-    # 請求書スプレッドシートの ID（固定値）
-    spreadsheet_id = "1ylFMe7tQQZzZRfok7Uv1Kp68sXfxeZk0sObDNm53EPs"
-    # エクスポートURL（指定したシートのみPDF化）
     export_url = f"https://docs.google.com/spreadsheets/d/{spreadsheet_id}/export?format=pdf&gid={sheet_gid}"
-    
-    # PDF のダウンロードリクエスト
     response = requests.get(export_url, headers=headers)
-    
     pdf_filename = f"sheet_{sheet_gid}.pdf"
     if response.status_code == 200:
         with open(pdf_filename, "wb") as pdf_file:
